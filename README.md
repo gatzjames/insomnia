@@ -28,13 +28,10 @@ For more generic product questions and feedback, join the [Slack Team](https://c
 Please read through our [contributing guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md). Included are directions
 for opening issues, coding standards, and notes on development.
 
-Editor preferences are available in the [editor config](.editorconfig) for easy use in
-common text editors. Read more and download plugins at [editorconfig.org](http://editorconfig.org).
-
 ## Developing
 
 Development on Insomnia can be done on Mac, Windows, or Linux as long as you have
-[NodeJS](https://nodejs.org) and [Git](https://git-scm.com/). See the `.nvmrc` file located in the project for the correct Node version.
+[Node.js](https://nodejs.org) and [Git](https://git-scm.com/). See the `.nvmrc` file located in the project for the correct Node version.
 
 <details>
 <summary>Initial Dev Setup</summary>
