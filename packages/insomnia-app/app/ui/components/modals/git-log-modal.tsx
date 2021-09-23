@@ -4,9 +4,9 @@ import React, { PureComponent } from 'react';
 import { AUTOBIND_CFG } from '../../../common/constants';
 import type { GitLogEntry, GitVCS } from '../../../sync/git/git-vcs';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalFooter from '../base/modal-footer';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalFooter } from '../base/modal-footer';
+import { ModalHeader } from '../base/modal-header';
 import TimeFromNow from '../time-from-now';
 import Tooltip from '../tooltip';
 
@@ -26,7 +26,7 @@ class GitLogModal extends PureComponent<Props, State> {
   state: State = {
     logs: [],
     branch: '??',
-  }
+  };
 
   _setModalRef(ref: Modal) {
     this.modal = ref;

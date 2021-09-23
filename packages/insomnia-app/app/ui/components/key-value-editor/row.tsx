@@ -9,7 +9,9 @@ import { AUTOBIND_CFG } from '../../../common/constants';
 import { describeByteSize } from '../../../common/misc';
 import { HandleGetRenderContext, HandleRender } from '../../../common/render';
 import Button from '../base/button';
-import { Dropdown, DropdownButton, DropdownItem } from '../base/dropdown/index';
+import { Dropdown } from '../base/dropdown/dropdown';
+import { DropdownButton } from '../base/dropdown/dropdown-button';
+import { DropdownItem } from '../base/dropdown/dropdown-item';
 import FileInputButton from '../base/file-input-button';
 import PromptButton from '../base/prompt-button';
 import OneLineEditor from '../codemirror/one-line-editor';
@@ -17,53 +19,53 @@ import CodePromptModal from '../modals/code-prompt-modal';
 import { showModal } from '../modals/index';
 
 interface Props {
-  onChange: Function,
-  onDelete: Function,
-  onFocusName: Function,
-  onFocusValue: Function,
-  onFocusDescription: Function,
-  displayDescription: boolean,
-  index: number,
+  onChange: Function;
+  onDelete: Function;
+  onFocusName: Function;
+  onFocusValue: Function;
+  onFocusDescription: Function;
+  displayDescription: boolean;
+  index: number;
   pair: {
-    id: string,
-    name: string,
-    value: string,
-    description: string,
-    fileName: string,
-    type: string,
-    disabled: boolean,
-  },
-  readOnly?: boolean,
-  onMove?: Function,
-  onKeyDown?: Function,
-  onBlurName?: Function,
-  onBlurValue?: Function,
-  onBlurDescription?: Function,
-  handleRender?: HandleRender,
-  handleGetRenderContext?: HandleGetRenderContext,
-  nunjucksPowerUserMode?: boolean,
-  isVariableUncovered?: boolean,
-  handleGetAutocompleteNameConstants?: Function,
-  handleGetAutocompleteValueConstants?: Function,
-  namePlaceholder?: string,
-  valuePlaceholder?: string,
-  descriptionPlaceholder?: string,
-  valueInputType?: string,
-  forceInput?: boolean,
-  allowMultiline?: boolean,
-  allowFile?: boolean,
-  sortable?: boolean,
-  noDelete?: boolean,
-  noDropZone?: boolean,
-  hideButtons?: boolean,
-  className?: string,
-  renderLeftIcon?: Function,
+    id: string;
+    name: string;
+    value: string;
+    description: string;
+    fileName: string;
+    type: string;
+    disabled: boolean;
+  };
+  readOnly?: boolean;
+  onMove?: Function;
+  onKeyDown?: Function;
+  onBlurName?: Function;
+  onBlurValue?: Function;
+  onBlurDescription?: Function;
+  handleRender?: HandleRender;
+  handleGetRenderContext?: HandleGetRenderContext;
+  nunjucksPowerUserMode?: boolean;
+  isVariableUncovered?: boolean;
+  handleGetAutocompleteNameConstants?: Function;
+  handleGetAutocompleteValueConstants?: Function;
+  namePlaceholder?: string;
+  valuePlaceholder?: string;
+  descriptionPlaceholder?: string;
+  valueInputType?: string;
+  forceInput?: boolean;
+  allowMultiline?: boolean;
+  allowFile?: boolean;
+  sortable?: boolean;
+  noDelete?: boolean;
+  noDropZone?: boolean;
+  hideButtons?: boolean;
+  className?: string;
+  renderLeftIcon?: Function;
   // For drag-n-drop
-  connectDragSource?: ConnectDragSource,
-  connectDragPreview?: ConnectDragPreview,
-  connectDropTarget?: ConnectDropTarget,
-  isDragging?: boolean,
-  isDraggingOver?: boolean,
+  connectDragSource?: ConnectDragSource;
+  connectDragPreview?: ConnectDragPreview;
+  connectDropTarget?: ConnectDropTarget;
+  isDragging?: boolean;
+  isDraggingOver?: boolean;
 }
 
 interface State {
@@ -169,6 +171,7 @@ class KeyValueEditorRow extends PureComponent<Props, State> {
 
   _handleTypeChange(def) {
     // Remove newlines if converting to text
+    // WARNING: props should never be overwritten!
     let value = this.props.pair.value || '';
 
     if (def.type === 'text' && !def.multiline && value.includes('\n')) {
@@ -212,7 +215,7 @@ class KeyValueEditorRow extends PureComponent<Props, State> {
     }
   }
 
-  _handleBlurDescription(e) {
+  _handleBlurDescription(e: FocusEvent) {
     if (this.props.onBlurDescription) {
       this.props.onBlurDescription(this.props.pair, e);
     }
@@ -289,7 +292,6 @@ class KeyValueEditorRow extends PureComponent<Props, State> {
       >
         <OneLineEditor
           ref={this._setDescriptionInputRef}
-          // @ts-expect-error -- TSCONVERSION very strange that one of the `OneLineEditor`s in this file _doesn't_ error with this...
           readOnly={readOnly}
           forceInput={forceInput}
           placeholder={descriptionPlaceholder || 'Description'}
@@ -347,7 +349,6 @@ class KeyValueEditorRow extends PureComponent<Props, State> {
       return (
         <OneLineEditor
           ref={ref => { this._valueInput = ref; }}
-          // @ts-expect-error -- TSCONVERSION very strange that one of the `OneLineEditor`s in this file _doesn't_ error with this...
           readOnly={readOnly}
           forceInput={forceInput}
           type={valueInputType || 'text'}
@@ -492,7 +493,6 @@ class KeyValueEditorRow extends PureComponent<Props, State> {
               isVariableUncovered={isVariableUncovered}
               getAutocompleteConstants={this._handleAutocompleteNames}
               forceInput={forceInput}
-              // @ts-expect-error -- TSCONVERSION very strange that one of the `OneLineEditor`s in this file _doesn't_ error with this...
               readOnly={readOnly}
               onBlur={this._handleBlurName}
               onChange={this._handleNameChange}

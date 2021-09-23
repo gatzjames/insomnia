@@ -5,9 +5,9 @@ import React, { PureComponent, ReactNode } from 'react';
 import { AUTOBIND_CFG } from '../../../common/constants';
 import Button from '../base/button';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalFooter from '../base/modal-footer';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalFooter } from '../base/modal-footer';
+import { ModalHeader } from '../base/modal-header';
 import PromptButton from '../base/prompt-button';
 
 interface State {
@@ -25,6 +25,7 @@ interface State {
   cancelable?: boolean | null;
   onComplete?: (arg0: string) => Promise<void> | void;
   onCancel?: (() => void) | null;
+  onHide?: () => void;
   onDeleteHint?: ((arg0: string) => void) | null;
   currentValue: string;
   loading: boolean;
@@ -44,6 +45,7 @@ export interface PromptModalOptions {
   label?: string;
   hints?: string[];
   onComplete?: (arg0: string) => Promise<void> | void;
+  onHide?: () => void;
   onDeleteHint?: (arg0: string) => void;
   onCancel?: () => void;
 }
@@ -69,9 +71,10 @@ class PromptModal extends PureComponent<{}, State> {
     onComplete: undefined,
     onCancel: undefined,
     onDeleteHint: undefined,
+    onHide: undefined,
     currentValue: '',
     loading: false,
-  }
+  };
 
   async _done(rawValue: string) {
     const { onComplete, upperCase } = this.state;
@@ -162,6 +165,7 @@ class PromptModal extends PureComponent<{}, State> {
     onCancel,
     validate,
     onDeleteHint,
+    onHide,
   }: PromptModalOptions) {
     this.setState({
       currentValue: '',
@@ -181,6 +185,7 @@ class PromptModal extends PureComponent<{}, State> {
       validate,
       hints: hints || [],
       loading: false,
+      onHide,
     });
     this.modal?.show();
 
@@ -276,7 +281,7 @@ class PromptModal extends PureComponent<{}, State> {
       'form-control--outlined': inputType !== 'checkbox',
     });
     return (
-      <Modal ref={this._setModalRef} noEscape={!cancelable || loading} onCancel={this._handleCancel}>
+      <Modal ref={this._setModalRef} noEscape={!cancelable || loading} onCancel={this._handleCancel} onHide={this.state.onHide}>
         <ModalHeader>{title}</ModalHeader>
         <ModalBody className="wide">
           <form onSubmit={this._handleSubmit} className="wide pad">

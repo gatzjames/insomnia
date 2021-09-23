@@ -8,8 +8,8 @@ import { constructKeyCombinationDisplay, isModifierKeyCode } from '../../../comm
 import { keyboardKeys } from '../../../common/keyboard-keys';
 import * as misc from '../../../common/misc';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalHeader } from '../base/modal-header';
 
 interface State {
   hotKeyRefId: string | null;
@@ -27,7 +27,7 @@ class AddKeyCombinationModal extends PureComponent<{}, State> {
     checkKeyCombinationDuplicate: misc.nullFn,
     onAddKeyCombination: misc.nullFn,
     pressedKeyCombination: null,
-  }
+  };
 
   _setModalRef(modal: Modal) {
     this._modal = modal;

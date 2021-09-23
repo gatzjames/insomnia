@@ -2,18 +2,18 @@ import { autoBindMethodsForReact } from 'class-autobind-decorator';
 import React, { PureComponent } from 'react';
 
 import { AUTOBIND_CFG } from '../../../common/constants';
-import CodeEditor from '../codemirror/code-editor';
+import CodeEditor, { UnconnectedCodeEditor } from '../codemirror/code-editor';
 
 interface Props {
-  value: string,
-  fontSize?: number,
-  responseId?: string,
+  value: string;
+  fontSize?: number;
+  responseId?: string;
 }
 @autoBindMethodsForReact(AUTOBIND_CFG)
 class ResponseRaw extends PureComponent<Props> {
-  private _codeEditor?: CodeEditor;
+  private _codeEditor?: UnconnectedCodeEditor;
 
-  _setCodeEditorRef(n: CodeEditor) {
+  _setCodeEditorRef(n: UnconnectedCodeEditor) {
     this._codeEditor = n;
   }
 

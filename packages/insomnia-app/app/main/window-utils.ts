@@ -1,4 +1,4 @@
-import electron, { BrowserWindow } from 'electron';
+import electron, { BrowserWindow, MenuItemConstructorOptions } from 'electron';
 import fs from 'fs';
 import { Curl } from 'node-libcurl';
 import * as os from 'os';
@@ -20,14 +20,18 @@ import { clickLink, getDataDirectory, restartApp } from '../common/electron-help
 import * as log from '../common/log';
 import LocalStorage from './local-storage';
 
-const { app, Menu, shell, dialog, clipboard } = electron;
+const { app, Menu, shell, dialog, clipboard, session } = electron;
 // So we can use native modules in renderer
-// NOTE: This will be deprecated in Electron 10 and impossible in 11
-//   https://github.com/electron/electron/issues/18397
+// NOTE: This was (deprecated in Electron 10)[https://github.com/electron/electron/issues/18397] and (removed in Electron 14)[https://github.com/electron/electron/pull/26874]
 app.allowRendererProcessReuse = false;
 
-// Note: this hack is required because MenuItemConstructorOptions is not exported from the electron types as of 9.3.5
-type MenuItemConstructorOptions = Parameters<typeof Menu.buildFromTemplate>[0][0];
+app.on('ready', () => {
+  // There's no option that prevents Electron from fetching spellcheck dictionaries from Chromium's CDN and passing a non-resolving URL is the only known way to prevent it from fetching.
+  // see: https://github.com/electron/electron/issues/22995
+  // On macOS the OS spellchecker is used and therefore we do not download any dictionary files.
+  // This API is a no-op on macOS.
+  session.defaultSession.setSpellCheckerDictionaryDownloadURL('https://00.00/');
+});
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 700;
@@ -111,6 +115,7 @@ export function createWindow() {
   mainWindow?.on('unresponsive', () => {
     showUnresponsiveModal();
   });
+
   // Open generic links (<a .../>) in default browser
   mainWindow?.webContents.on('will-navigate', (e, url) => {
     if (url === appUrl) {
@@ -189,13 +194,11 @@ export function createWindow() {
       {
         label: `${MNEMONIC_SYM}Undo`,
         accelerator: 'CmdOrCtrl+Z',
-        // @ts-expect-error -- TSCONVERSION missing in official electron types
         selector: 'undo:',
       },
       {
         label: `${MNEMONIC_SYM}Redo`,
         accelerator: 'Shift+CmdOrCtrl+Z',
-        // @ts-expect-error -- TSCONVERSION missing in official electron types
         selector: 'redo:',
       },
       {
@@ -204,25 +207,21 @@ export function createWindow() {
       {
         label: `Cu${MNEMONIC_SYM}t`,
         accelerator: 'CmdOrCtrl+X',
-        // @ts-expect-error -- TSCONVERSION missing in official electron types
         selector: 'cut:',
       },
       {
         label: `${MNEMONIC_SYM}Copy`,
         accelerator: 'CmdOrCtrl+C',
-        // @ts-expect-error -- TSCONVERSION missing in official electron types
         selector: 'copy:',
       },
       {
         label: `${MNEMONIC_SYM}Paste`,
         accelerator: 'CmdOrCtrl+V',
-        // @ts-expect-error -- TSCONVERSION missing in official electron types
         selector: 'paste:',
       },
       {
         label: `Select ${MNEMONIC_SYM}All`,
         accelerator: 'CmdOrCtrl+A',
-        // @ts-expect-error -- TSCONVERSION missing in official electron types
         selector: 'selectAll:',
       },
     ],
@@ -330,8 +329,7 @@ export function createWindow() {
     submenu: [
       {
         label: `${MNEMONIC_SYM}Help and Support`,
-        // @ts-expect-error -- TSCONVERSION TSCONVERSION `Accelerator` type from electron is needed here as a cast but is not exported as of the 9.3.5 types
-        accelerator: !isMac() ? 'F1' : null,
+        ...(isMac() ? {} : { accelerator: 'F1' }),
         click: () => {
           clickLink(docsBase);
         },

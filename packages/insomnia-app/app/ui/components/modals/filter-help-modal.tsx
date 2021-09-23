@@ -4,8 +4,8 @@ import React, { PureComponent } from 'react';
 import { AUTOBIND_CFG } from '../../../common/constants';
 import Link from '../base/link';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalHeader } from '../base/modal-header';
 
 interface State {
   isJson: boolean;
@@ -15,7 +15,7 @@ interface State {
 class FilterHelpModal extends PureComponent<{}, State> {
   state: State = {
     isJson: true,
-  }
+  };
 
   modal: Modal | null = null;
 

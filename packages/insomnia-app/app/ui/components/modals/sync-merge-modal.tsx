@@ -6,9 +6,9 @@ import type { Workspace } from '../../../models/workspace';
 import type { DocumentKey, MergeConflict, StatusCandidate } from '../../../sync/types';
 import { VCS } from '../../../sync/vcs/vcs';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalFooter from '../base/modal-footer';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalFooter } from '../base/modal-footer';
+import { ModalHeader } from '../base/modal-header';
 
 interface Props {
   workspace: Workspace;
@@ -27,7 +27,7 @@ class SyncMergeModal extends PureComponent<Props, State> {
 
   state: State = {
     conflicts: [],
-  }
+  };
 
   _setModalRef(n: Modal) {
     this.modal = n;

@@ -7,12 +7,12 @@ import { HandleGetRenderContext, HandleRender } from '../../../common/render';
 import * as models from '../../../models';
 import { GrpcRequest, isGrpcRequest } from '../../../models/grpc-request';
 import * as requestOperations from '../../../models/helpers/request-operations';
-import type { Request } from '../../../models/request';
+import type { BaseRequest, Request } from '../../../models/request';
 import { isWorkspace, Workspace } from '../../../models/workspace';
 import DebouncedInput from '../base/debounced-input';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalHeader } from '../base/modal-header';
 import HelpTooltip from '../help-tooltip';
 import MarkdownEditor from '../markdown-editor';
 
@@ -58,7 +58,7 @@ class RequestSettingsModal extends PureComponent<Props, State> {
     workspaces: [],
     justCopied: false,
     justMoved: false,
-  }
+  };
 
   _setModalRef(n: Modal) {
     this.modal = n;
@@ -232,7 +232,7 @@ class RequestSettingsModal extends PureComponent<Props, State> {
     this.modal?.hide();
   }
 
-  renderCheckboxInput(setting: string) {
+  renderCheckboxInput(setting: keyof BaseRequest) {
     const { request } = this.state;
 
     if (!request) {

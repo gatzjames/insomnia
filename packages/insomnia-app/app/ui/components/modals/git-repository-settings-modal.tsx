@@ -7,9 +7,9 @@ import type { GitRepository } from '../../../models/git-repository';
 import { deleteGitRepository } from '../../../models/helpers/git-repository-operations';
 import Link from '../base/link';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalFooter from '../base/modal-footer';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalFooter } from '../base/modal-footer';
+import { ModalHeader } from '../base/modal-header';
 import HelpTooltip from '../help-tooltip';
 
 interface State {
@@ -32,7 +32,7 @@ class GitRepositorySettingsModal extends PureComponent<{}, State> {
   state: State = {
     inputs: {},
     gitRepository: null,
-  }
+  };
 
   _setModalRef(n: Modal) {
     this.modal = n;

@@ -6,8 +6,8 @@ import { AUTOBIND_CFG } from '../../../common/constants';
 import { docsTemplateTags } from '../../../common/documentation';
 import Link from '../base/link';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalHeader } from '../base/modal-header';
 import RequestSettingsModal from '../modals/request-settings-modal';
 import { showModal } from './index';
 
@@ -21,7 +21,7 @@ class RequestRenderErrorModal extends PureComponent<{}, State> {
   state: State = {
     error: null,
     request: null,
-  }
+  };
 
   modal: Modal | null = null;
 

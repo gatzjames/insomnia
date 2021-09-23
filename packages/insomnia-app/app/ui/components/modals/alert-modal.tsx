@@ -3,9 +3,9 @@ import React, { PureComponent, ReactNode } from 'react';
 
 import { AUTOBIND_CFG } from '../../../common/constants';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalFooter from '../base/modal-footer';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalFooter } from '../base/modal-footer';
+import { ModalHeader } from '../base/modal-header';
 
 export interface AlertModalOptions {
   title?: string;
@@ -24,7 +24,7 @@ class AlertModal extends PureComponent<{}, State> {
     message: '',
     addCancel: false,
     okLabel: '',
-  }
+  };
 
   modal: Modal | null = null;
   _cancel: HTMLButtonElement | null = null;

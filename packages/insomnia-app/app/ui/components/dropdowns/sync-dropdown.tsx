@@ -23,7 +23,10 @@ import { VCS } from '../../../sync/vcs/vcs';
 import { RootState } from '../../redux/modules';
 import { activateWorkspace } from '../../redux/modules/workspace';
 import { selectRemoteProjects } from '../../redux/selectors';
-import { Dropdown, DropdownButton, DropdownDivider, DropdownItem } from '../base/dropdown';
+import { Dropdown } from '../base/dropdown/dropdown';
+import { DropdownButton } from '../base/dropdown/dropdown-button';
+import { DropdownDivider } from '../base/dropdown/dropdown-divider';
+import { DropdownItem } from '../base/dropdown/dropdown-item';
 import Link from '../base/link';
 import PromptButton from '../base/prompt-button';
 import HelpTooltip from '../help-tooltip';
@@ -103,7 +106,7 @@ class UnconnectedSyncDropdown extends PureComponent<Props, State> {
       unstaged: {},
     },
     remoteBackendProjects: [],
-  }
+  };
 
   async refreshMainAttributes(extraState: Partial<State> = {}) {
     const { vcs, syncItems, workspace, project } = this.props;

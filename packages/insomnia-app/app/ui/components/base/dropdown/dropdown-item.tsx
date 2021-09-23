@@ -6,19 +6,19 @@ import { AUTOBIND_CFG } from '../../../../common/constants';
 
 interface Props {
   addIcon?: boolean; // TODO(TSCONVERSION) some consumers are passing this prop but it appears to be unused
-  title?: string,
-  buttonClass?: React.ComponentType,
-  stayOpenAfterClick?: boolean,
-  value?: any,
-  disabled?: boolean,
-  onClick: Function,
-  children: ReactNode,
-  className?: string,
-  color?: string,
+  title?: string;
+  buttonClass?: React.ComponentType;
+  stayOpenAfterClick?: boolean;
+  value?: any;
+  disabled?: boolean;
+  onClick: Function;
+  children: ReactNode;
+  className?: string;
+  color?: string;
 }
 
 @autoBindMethodsForReact(AUTOBIND_CFG)
-class DropdownItem extends PureComponent<Props> {
+export class DropdownItem extends PureComponent<Props> {
   _handleClick(e) {
     const { stayOpenAfterClick, onClick, disabled } = this.props;
 
@@ -70,5 +70,3 @@ class DropdownItem extends PureComponent<Props> {
     return createElement(buttonClass || 'button', buttonProps, inner);
   }
 }
-
-export default DropdownItem;

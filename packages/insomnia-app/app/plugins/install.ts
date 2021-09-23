@@ -11,13 +11,33 @@ import { getTempDir } from '../common/electron-helpers';
 const YARN_DEPRECATED_WARN = /(?<keyword>warning)(?<dependencies>[^>:].+[>:])(?<issue>.+)/;
 
 interface InsomniaPlugin {
-  insomnia: any;
+  // Insomnia attribute from package.json
+  insomnia: {
+    name: string;
+    displayName: string;
+    description: string;
+
+    // Used by the plugin hub, not currently used by Insomnia app
+    // Each image is relative to package root
+    images?: {
+      icon?: string;
+      cover?: string;
+    };
+
+    publisher?: {
+      name: string;
+      // absolute URL
+      icon: string;
+    };
+  };
+
+  // NPM specific properties
   name: string;
   version: string;
   dist: {
     shasum: string;
     tarball: string;
-  }
+  };
 }
 
 export default async function(lookupName: string) {

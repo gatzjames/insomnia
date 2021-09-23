@@ -10,8 +10,8 @@ import type { StatusCandidate } from '../../../sync/types';
 import { interceptAccessError } from '../../../sync/vcs/util';
 import { VCS } from '../../../sync/vcs/vcs';
 import Modal from '../base/modal';
-import ModalBody from '../base/modal-body';
-import ModalHeader from '../base/modal-header';
+import { ModalBody } from '../base/modal-body';
+import { ModalHeader } from '../base/modal-header';
 import PromptButton from '../base/prompt-button';
 import SyncPullButton from '../sync-pull-button';
 
@@ -40,7 +40,7 @@ class SyncBranchesModal extends PureComponent<Props, State> {
     branches: [],
     remoteBranches: [],
     currentBranch: '',
-  }
+  };
 
   _setModalRef(m: Modal) {
     this.modal = m;

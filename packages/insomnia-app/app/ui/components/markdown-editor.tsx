@@ -6,25 +6,25 @@ import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import { AUTOBIND_CFG } from '../../common/constants';
 import { HandleGetRenderContext, HandleRender } from '../../common/render';
 import Button from './base/button';
-import CodeEditor from './codemirror/code-editor';
+import CodeEditor, { UnconnectedCodeEditor } from './codemirror/code-editor';
 import MarkdownPreview from './markdown-preview';
 
 interface Props {
-  onChange: Function,
-  defaultValue: string,
-  fontSize: number,
-  indentSize: number,
-  keyMap: string,
-  lineWrapping: boolean,
-  handleRender: HandleRender,
-  handleGetRenderContext: HandleGetRenderContext,
-  nunjucksPowerUserMode: boolean,
-  isVariableUncovered: boolean,
-  placeholder?: string,
-  defaultPreviewMode?: boolean,
-  className?: string,
-  mode?: string,
-  tall?: boolean,
+  onChange: Function;
+  defaultValue: string;
+  fontSize: number;
+  indentSize: number;
+  keyMap: string;
+  lineWrapping: boolean;
+  handleRender?: HandleRender;
+  handleGetRenderContext?: HandleGetRenderContext;
+  nunjucksPowerUserMode: boolean;
+  isVariableUncovered: boolean;
+  placeholder?: string;
+  defaultPreviewMode?: boolean;
+  className?: string;
+  mode?: string;
+  tall?: boolean;
 }
 
 interface State {
@@ -33,7 +33,7 @@ interface State {
 
 @autoBindMethodsForReact(AUTOBIND_CFG)
 class MarkdownEditor extends PureComponent<Props, State> {
-  _editor: CodeEditor | null = null;
+  _editor: UnconnectedCodeEditor | null = null;
 
   constructor(props: Props) {
     super(props);
@@ -49,7 +49,7 @@ class MarkdownEditor extends PureComponent<Props, State> {
     });
   }
 
-  _setEditorRef(n: CodeEditor) {
+  _setEditorRef(n: UnconnectedCodeEditor) {
     this._editor = n;
   }
 
