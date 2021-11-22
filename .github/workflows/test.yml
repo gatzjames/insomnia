@@ -2,11 +2,6 @@ name: Test
 
 on:
   workflow_dispatch:
-    inputs:
-      name:
-        description: 'Test'
-        required: false
-        default: 'Test'
   push:
     branches:
       - develop
