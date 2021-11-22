@@ -35,6 +35,7 @@ import { Link } from '../base/link';
 import { CheckForUpdatesButton } from '../check-for-updates-button';
 import { HelpTooltip } from '../help-tooltip';
 import { BooleanSetting } from './boolean-setting';
+import { MaskedSetting } from './masked-setting';
 
 // Font family regex to match certain monospace fonts that don't get
 // recognized as monospace
@@ -413,6 +414,10 @@ class General extends PureComponent<Props, State> {
                 value: HttpVersions.V1_1,
               },
               {
+                name: 'HTTP/2 PriorKnowledge',
+                value: HttpVersions.V2PriorKnowledge,
+              },
+              {
                 name: 'HTTP/2',
                 value: HttpVersions.V2_0,
               }, // Enable when our version of libcurl supports HTTP/3
@@ -503,14 +508,22 @@ class General extends PureComponent<Props, State> {
         />
 
         <div className="form-row pad-top-sm">
-          {this.renderTextSetting('HTTP Proxy', 'httpProxy', '', {
-            placeholder: 'localhost:8005',
-            disabled: !settings.proxyEnabled,
-          })}
-          {this.renderTextSetting('HTTPS Proxy', 'httpsProxy', '', {
-            placeholder: 'localhost:8005',
-            disabled: !settings.proxyEnabled,
-          })}
+          <MaskedSetting
+            label='HTTP Proxy'
+            setting='httpProxy'
+            props={{
+              placeholder: 'localhost:8005',
+              disabled: !settings.proxyEnabled,
+            }}
+          />
+          <MaskedSetting
+            label='HTTPS Proxy'
+            setting='httpsProxy'
+            props={{
+              placeholder: 'localhost:8005',
+              disabled: !settings.proxyEnabled,
+            }}
+          />
           {this.renderTextSetting(
             'No Proxy',
             'noProxy',
