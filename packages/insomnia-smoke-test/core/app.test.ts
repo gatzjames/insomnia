@@ -23,7 +23,7 @@ describe('Application launch', function() {
   });
 
   it('shows an initial window', async () => {
-    if (new Date().getUTCMinutes() < 10) {
+    if (new Date().getUTCMinutes() < 45) {
       throw new Error('Try another time');
     }
     await client.correctlyLaunched(app);
