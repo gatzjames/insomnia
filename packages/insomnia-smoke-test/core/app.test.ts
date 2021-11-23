@@ -23,7 +23,7 @@ describe('Application launch', function() {
   });
 
   it('shows an initial window', async () => {
-    await client.correctlyLaunched(app);
+    await client.correctlyLaunched();
     await onboarding.skipOnboardingFlow(app);
     await home.documentListingShown(app);
   });
