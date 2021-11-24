@@ -52,7 +52,7 @@ jobs:
           NOW=$(date +"%M")
           LAST=$(echo $NOW | tail -c 2)
 
-          if [ $LAST -gt 5 ]; then
+          if [ $LAST -lt 5 ]; then
             echo "Failed"
             exit 1
           fi
