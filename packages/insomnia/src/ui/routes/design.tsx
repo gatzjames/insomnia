@@ -28,6 +28,7 @@ import { ErrorBoundary } from '../components/error-boundary';
 import { Notice, NoticeTable } from '../components/notice-table';
 import { SidebarLayout } from '../components/sidebar-layout';
 import { SpecEditorSidebar } from '../components/spec-editor/spec-editor-sidebar';
+import { Button } from '../components/themed-button';
 import { Tooltip } from '../components/tooltip';
 import { superFaint } from '../css/css-in-js';
 import {
@@ -252,6 +253,33 @@ const Design: FC = () => {
               </div>
             )}
           >
+            <Toolbar>
+              <Button
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignContent: 'center',
+                  gap: 'var(--padding-xs)',
+                }}
+                disabled={lintMessages.filter(message => message.type === 'error').length > 0 || generateRequestCollectionFetcher.state !== 'idle'}
+                className="btn btn--compact"
+                onClick={() => {
+                  generateRequestCollectionFetcher.submit(
+                    {},
+                    {
+                      action: `/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/${ACTIVITY_SPEC}/generate-request-collection`,
+                      method: 'post',
+                    }
+                  );
+                }}
+              >
+                {generateRequestCollectionFetcher.state === 'loading' ? (
+                  <i className="fa fa-spin fa-spinner" />
+                ) : (
+                  <i className="fa fa-file-import" />
+                )} Generate Request Collection
+              </Button>
+            </Toolbar>
             <SpecEditorSidebar
               apiSpec={apiSpec}
               handleSetSelection={handleScrollToSelection}
@@ -340,25 +368,6 @@ const Design: FC = () => {
                     </RulesetLabel>
                   </Tooltip>
                 }
-                <button
-                  disabled={lintMessages.filter(message => message.type === 'error').length > 0 || generateRequestCollectionFetcher.state !== 'idle'}
-                  className="btn btn--compact"
-                  onClick={() => {
-                    generateRequestCollectionFetcher.submit(
-                      {},
-                      {
-                        action: `/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/${ACTIVITY_SPEC}/generate-request-collection`,
-                        method: 'post',
-                      }
-                    );
-                  }}
-                >
-                  {generateRequestCollectionFetcher.state === 'loading' ? (
-                    <i className="fa fa-spin fa-spinner" />
-                  ) : (
-                    <i className="fa fa-file-import" />
-                  )} Generate Request Collection
-                </button>
               </Toolbar>
             ) : null}
           </div>

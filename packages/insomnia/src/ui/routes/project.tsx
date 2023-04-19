@@ -249,6 +249,7 @@ const OrganizationProjectsSidebar: FC<{
   collectionsCount: number;
   createNewCollection: () => void;
   createNewDocument: () => void;
+  createNewTest: () => void;
 }> = ({
   activeProject,
   projects,
@@ -258,6 +259,7 @@ const OrganizationProjectsSidebar: FC<{
   documentsCount,
   allFilesCount,
   createNewCollection,
+  createNewTest,
   createNewDocument,
 }) => {
   const createNewProjectFetcher = useFetcher();
@@ -465,11 +467,26 @@ const OrganizationProjectsSidebar: FC<{
               />
             </SidebarListItemContent>
           </Item>
-          <Item key="design" aria-label="Documents">
+          <Item key="collection" aria-label="Collections">
+            <SidebarListItemContent level={2}>
+              <SidebarListItemTitle
+                icon="bars"
+                label={`Collections (${collectionsCount})`}
+              />
+              <ListItemButton
+                onPress={() => {
+                  createNewCollection();
+                }}
+              >
+                <i className="fa fa-plus" />
+              </ListItemButton>
+            </SidebarListItemContent>
+          </Item>
+          <Item key="design" aria-label="Design Specs">
             <SidebarListItemContent level={2}>
               <SidebarListItemTitle
                 icon="file"
-                label={`Documents (${documentsCount})`}
+                label={`Design Specs (${documentsCount})`}
               />
               <ListItemButton
                 onPress={() => {
@@ -480,15 +497,30 @@ const OrganizationProjectsSidebar: FC<{
               </ListItemButton>
             </SidebarListItemContent>
           </Item>
-          <Item key="collection" aria-label="Collections">
+          <Item key="tests" aria-label="Tests">
             <SidebarListItemContent level={2}>
               <SidebarListItemTitle
-                icon="bars"
-                label={`Collections (${collectionsCount})`}
+                icon="vial"
+                label={`Tests (${collectionsCount})`}
               />
               <ListItemButton
                 onPress={() => {
-                  createNewCollection();
+                  createNewTest();
+                }}
+              >
+                <i className="fa fa-plus" />
+              </ListItemButton>
+            </SidebarListItemContent>
+          </Item>
+          <Item key="environments" aria-label="Environments">
+            <SidebarListItemContent level={2}>
+              <SidebarListItemTitle
+                icon="edit"
+                label={'Environments'}
+              />
+              <ListItemButton
+                onPress={() => {
+                  createNewTest();
                 }}
               >
                 <i className="fa fa-plus" />
@@ -854,6 +886,20 @@ const ProjectRoute: FC = () => {
   const [importModalType, setImportModalType] = useState<
     'uri' | 'file' | 'clipboard' | null
   >(null);
+
+  const createNewTest = () => {
+    showPrompt({
+      title: 'Create New Test Suite',
+      submitName: 'Create',
+      placeholder: 'My Test Suite',
+      defaultValue: 'My Test Suite',
+      selectText: true,
+      onComplete: async (name: string) => {
+        console.log(name);
+      },
+    });
+  };
+
   const createNewCollection = () => {
     showPrompt({
       title: 'Create New Request Collection',
@@ -920,6 +966,7 @@ const ProjectRoute: FC = () => {
               documentsCount={documentsCount}
               createNewCollection={createNewCollection}
               createNewDocument={createNewDocument}
+              createNewTest={createNewTest}
             />
           }
           renderPaneOne={
