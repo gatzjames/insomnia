@@ -36,6 +36,7 @@ import { descendingNumberSort, sortMethodMap } from '../../common/sorting';
 import { strings } from '../../common/strings';
 import * as models from '../../models';
 import { ApiSpec } from '../../models/api-spec';
+import { Environment } from '../../models/environment';
 import { sortProjects } from '../../models/helpers/project';
 import {
   DEFAULT_ORGANIZATION_ID,
@@ -47,6 +48,7 @@ import {
   isRemoteProject,
   Project,
 } from '../../models/project';
+import { UnitTestSuite } from '../../models/unit-test-suite';
 import { isDesign, Workspace } from '../../models/workspace';
 import { invariant } from '../../utils/invariant';
 import {
@@ -666,6 +668,26 @@ export const indexLoader: LoaderFunction = async ({ params }) => {
 
 export interface ProjectLoaderData {
   workspaces: WorkspaceWithMetadata[];
+  collections: {
+    count: number;
+    items: WorkspaceWithMetadata[];
+  };
+  documents: {
+    count: number;
+    items: ApiSpec[];
+  };
+  tests: {
+    count: number;
+    items: {
+      _id: string;
+      name: string;
+      unitTestSuites: UnitTestSuite[];
+    }[];
+  };
+  environments: {
+    count: number;
+    items: Environment[];
+  };
   allFilesCount: number;
   documentsCount: number;
   collectionsCount: number;
@@ -851,6 +873,22 @@ export const loader: LoaderFunction = async ({
         },
     workspaces,
     projects,
+    tests: {
+      count: 10,
+      items: await Promise.all(workspaces.map(async w => ({
+        _id: 'test-' + w._id,
+        name: w.name,
+        unitTestSuites: await models.unitTestSuite.findByParentId(w._id),
+      }))),
+    },
+    collections: {
+      count: 10,
+      items: workspaces
+    },
+    environments: {
+      count: 10,
+      items: ,
+    },
     activeProject: project,
     allFilesCount: workspacesWithMetaData.length,
     documentsCount: workspacesWithMetaData.filter(
