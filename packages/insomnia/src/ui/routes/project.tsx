@@ -58,6 +58,7 @@ import {
   DropdownSection,
   ItemContent,
 } from '../components/base/dropdown';
+import { Card } from '../components/card';
 import { DashboardSortDropdown } from '../components/dropdowns/dashboard-sort-dropdown';
 import { ProjectDropdown } from '../components/dropdowns/project-dropdown';
 import { RemoteWorkspacesDropdown } from '../components/dropdowns/remote-workspaces-dropdown';
@@ -67,6 +68,7 @@ import { GitRepositoryCloneModal } from '../components/modals/git-repository-set
 import { ImportModal } from '../components/modals/import-modal';
 import { EmptyStatePane } from '../components/panes/project-empty-state-pane';
 import { SidebarLayout } from '../components/sidebar-layout';
+import { SvgIcon } from '../components/svg-icon';
 import { Button } from '../components/themed-button/button';
 import { WorkspaceCard } from '../components/workspace-card';
 import { RootLoaderData } from './root';
@@ -249,6 +251,18 @@ const OrganizationProjectsSidebar: FC<{
   allFilesCount: number;
   documentsCount: number;
   collectionsCount: number;
+  environments: {
+    count: number;
+    items: Environment[];
+  };
+  tests: {
+    count: number;
+    items: {
+      _id: string;
+      name: string;
+      unitTestSuites: UnitTestSuite[];
+    };
+  };
   createNewCollection: () => void;
   createNewDocument: () => void;
   createNewTest: () => void;
@@ -259,6 +273,8 @@ const OrganizationProjectsSidebar: FC<{
   organizationId,
   collectionsCount,
   documentsCount,
+  tests,
+  environments,
   allFilesCount,
   createNewCollection,
   createNewTest,
@@ -503,7 +519,7 @@ const OrganizationProjectsSidebar: FC<{
             <SidebarListItemContent level={2}>
               <SidebarListItemTitle
                 icon="vial"
-                label={`Tests (${collectionsCount})`}
+                label={`Tests (${tests.count})`}
               />
               <ListItemButton
                 onPress={() => {
@@ -518,7 +534,7 @@ const OrganizationProjectsSidebar: FC<{
             <SidebarListItemContent level={2}>
               <SidebarListItemTitle
                 icon="edit"
-                label={'Environments'}
+                label={`Environments (${environments.count})`}
               />
               <ListItemButton
                 onPress={() => {
@@ -633,7 +649,9 @@ export const indexLoader: LoaderFunction = async ({ params }) => {
   const { organizationId } = params;
   invariant(organizationId, 'Organization ID is required');
 
-  const prevOrganizationLocation = localStorage.getItem(`locationHistoryEntry:${organizationId}`);
+  const prevOrganizationLocation = localStorage.getItem(
+    `locationHistoryEntry:${organizationId}`
+  );
 
   if (prevOrganizationLocation) {
     const match = matchPath(
@@ -645,7 +663,9 @@ export const indexLoader: LoaderFunction = async ({ params }) => {
     );
 
     if (match && match.params.organizationId && match.params.projectId) {
-      return redirect(`/organization/${match?.params.organizationId}/project/${match?.params.projectId}`);
+      return redirect(
+        `/organization/${match?.params.organizationId}/project/${match?.params.projectId}`
+      );
     }
   }
 
@@ -695,6 +715,23 @@ export interface ProjectLoaderData {
   projects: Project[];
   organization: Organization;
 }
+
+const Label = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  overflow: 'hidden',
+  gap: 'var(--padding-sm)',
+  height: '1.5rem',
+  paddingRight: 'var(--padding-sm)',
+});
+
+const LabelIcon = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '0.2rem',
+  height: '1rem',
+});
 
 export const loader: LoaderFunction = async ({
   params,
@@ -875,19 +912,23 @@ export const loader: LoaderFunction = async ({
     projects,
     tests: {
       count: 10,
-      items: await Promise.all(workspaces.map(async w => ({
-        _id: 'test-' + w._id,
-        name: w.name,
-        unitTestSuites: await models.unitTestSuite.findByParentId(w._id),
-      }))),
+      items: await Promise.all(
+        workspaces.map(async w => ({
+          _id: 'test-' + w._id,
+          name: w.name,
+          unitTestSuites: await models.unitTestSuite.findByParentId(w._id),
+        }))
+      ),
     },
     collections: {
       count: 10,
-      items: workspaces
+      items: workspaces,
     },
     environments: {
       count: 10,
-      items: ,
+      items: (await models.environment.all()).filter(env =>
+        workspaces.some(w => w.workspace._id === env.parentId)
+      ),
     },
     activeProject: project,
     allFilesCount: workspacesWithMetaData.length,
@@ -905,6 +946,8 @@ const ProjectRoute: FC = () => {
     workspaces,
     activeProject,
     projects,
+    environments,
+    tests,
     organization,
     allFilesCount,
     collectionsCount,
@@ -998,6 +1041,8 @@ const ProjectRoute: FC = () => {
               title={organization.name}
               projects={projects}
               workspaces={workspaces.map(w => w.workspace)}
+              environments={environments}
+              tests={tests}
               activeProject={activeProject}
               allFilesCount={allFilesCount}
               collectionsCount={collectionsCount}
@@ -1088,10 +1133,7 @@ const ProjectRoute: FC = () => {
                         />
                       </DropdownItem>
                     </DropdownSection>
-                    <DropdownSection
-                      aria-label="Import From"
-                      title="Import"
-                    >
+                    <DropdownSection aria-label="Import From" title="Import">
                       <DropdownItem aria-label="Import">
                         <ItemContent
                           icon="file-import"
@@ -1110,6 +1152,50 @@ const ProjectRoute: FC = () => {
                   </Dropdown>
                 </div>
               </PaneHeaderToolbar>
+              {environments.count > 0 &&
+                environments.items.map(environment => (
+                  <Card
+                    tagLabel={
+                      <Label>
+                        <LabelIcon
+                          style={{
+                            color: 'var(--color-font-surprise)',
+                            backgroundColor: 'var(--color-info)',
+                          }}
+                        >
+                          <i className='fa fa-edit' />
+                        </LabelIcon>
+                        <span>Environment</span>
+                      </Label>
+                    }
+                    docTitle={environment.name}
+                    key={environment._id}
+                  >
+                    {environment.name}
+                  </Card>
+                ))}
+              {tests.count > 0 &&
+                tests.items.map(test => (
+                  <Card
+                    tagLabel={
+                      <Label>
+                        <LabelIcon
+                          style={{
+                            color: 'var(--color-font-surprise)',
+                            backgroundColor: 'var(--color-info)',
+                          }}
+                        >
+                          <i className='fa fa-vial' />
+                        </LabelIcon>
+                        <span>Test</span>
+                      </Label>
+                    }
+                    docTitle={test.name}
+                    key={test._id}
+                  >
+                    {test.name}
+                  </Card>
+                ))}
               {hasWorkspaces &&
                 workspaces.map(workspace => (
                   <WorkspaceCard
@@ -1131,6 +1217,7 @@ const ProjectRoute: FC = () => {
                     filter={filter}
                   />
                 ))}
+
               {filter && !hasWorkspaces && (
                 <div>
                   <p className="notice subtle">
