@@ -165,13 +165,6 @@ export const loader: LoaderFunction = async () => {
     };
   }
 
-  return {
-    user: {
-      name: '',
-      picture: '',
-    },
-    organizations: [],
-  };
 };
 
 const Layout = styled.div<{withBar: boolean}>({

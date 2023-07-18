@@ -39,6 +39,8 @@ export const AccountToolbar = () => {
 
   const logoutFetcher = useFetcher();
 
+  const logoutFetcher = useFetcher();
+
   return (
     <Toolbar>
       {presence && (
