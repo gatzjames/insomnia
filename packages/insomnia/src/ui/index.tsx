@@ -563,6 +563,7 @@ function updateReduxNavigationState(store: Store, pathname: string) {
 
 async function renderApp() {
   await database.initClient();
+  await models.project.seed();
 
   await initPlugins();
 
