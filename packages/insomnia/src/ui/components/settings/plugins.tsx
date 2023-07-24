@@ -2,6 +2,7 @@ import * as path from 'path';
 import React, { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { isLoggedIn } from '../../../account/session';
 import {
   NPM_PACKAGE_BASE,
   PLUGIN_HUB_BASE,
@@ -47,7 +48,9 @@ export const Plugins: FC = () => {
   const settings = useSelector(selectSettings);
 
   useEffect(() => {
-    refreshPlugins();
+    if (isLoggedIn()) {
+      refreshPlugins();
+    }
   }, []);
 
   async function refreshPlugins() {
@@ -57,6 +60,16 @@ export const Plugins: FC = () => {
     reload();
 
     setState(state => ({ ...state, plugins, isRefreshingPlugins: false }));
+  }
+
+  if (!isLoggedIn()) {
+    return (
+      <div>
+        <p className="notice info no-margin-top">
+          You must be logged in to use plugins.
+        </p>
+      </div>
+    );
   }
 
   return (

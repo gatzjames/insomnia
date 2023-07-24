@@ -426,10 +426,21 @@ export const RequestUrlBar = forwardRef<RequestUrlBarHandle, Props>(({
             {isEventStreamRequest(request) ? 'Disconnect' : 'Cancel'}
           </button>
         ) : (
-          <>
+          <div
+            style={{
+              padding: 'var(--padding-xs)',
+              display: 'flex',
+            }}
+          >
             <button
               type="button"
-              className="urlbar__send-btn"
+              style={{
+                color: 'var(--color-font-surprise)',
+                padding: '0 var(--padding-md)',
+                borderTopLeftRadius: 'var(--radius-md)',
+                borderBottomLeftRadius: 'var(--radius-md)',
+                backgroundColor: 'var(--color-surprise)',
+              }}
               onClick={send}
             >
               {buttonText}</button>
@@ -442,8 +453,13 @@ export const RequestUrlBar = forwardRef<RequestUrlBarHandle, Props>(({
               closeOnSelect={false}
               triggerButton={
                 <StyledDropdownButton
-                  className="urlbar__send-context"
                   removeBorderRadius={true}
+                  style={{
+                    borderTopRightRadius: 'var(--radius-md)',
+                    borderBottomRightRadius: 'var(--radius-md)',
+                    backgroundColor: 'var(--color-surprise)',
+                    padding: '0 var(--padding-sm)',
+                  }}
                 >
                   <i className="fa fa-caret-down" />
                 </StyledDropdownButton>
@@ -513,7 +529,7 @@ export const RequestUrlBar = forwardRef<RequestUrlBarHandle, Props>(({
                 </DropdownItem>
               </DropdownSection>
             </Dropdown>)}
-          </>
+          </div>
         )}
       </div>
     </div>

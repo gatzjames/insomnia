@@ -1,12 +1,13 @@
 import { IpcRendererEvent } from 'electron';
 import React, { useEffect, useState } from 'react';
-import { LoaderFunction, Outlet, redirect, useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
+import { Link, LoaderFunction, Outlet, redirect, useFetcher, useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { getCurrentSessionId } from '../../account/session';
+import { getCurrentSessionId, isLoggedIn } from '../../account/session';
 import { isDevelopment } from '../../common/constants';
 import * as models from '../../models';
 import { Organization } from '../../models/organization';
+import { isScratchpad } from '../../models/workspace';
 import { reloadPlugins } from '../../plugins';
 import { createPlugin } from '../../plugins/create';
 import { setTheme } from '../../plugins/misc';
@@ -26,6 +27,7 @@ import { SettingsModal, TAB_INDEX_PLUGINS, TAB_INDEX_THEMES } from '../component
 import { SyncMergeModal } from '../components/modals/sync-merge-modal';
 import { OrganizationsNav } from '../components/organizations-navbar';
 import { StatusBar } from '../components/statusbar';
+import { Button } from '../components/themed-button';
 import { Toast } from '../components/toast';
 import { WorkspaceHeader } from '../components/workspace-header';
 import { AppHooks } from '../containers/app-hooks';
@@ -37,37 +39,41 @@ import { WorkspaceLoaderData } from './workspace';
 
 export const indexLoader: LoaderFunction = async () => {
   const sessionId = getCurrentSessionId();
-  if (!sessionId) {
-    throw redirect('/auth/login');
-  }
+  // if (!sessionId) {
+  //   throw redirect('/auth/login');
+  // }
 
-  const teams = await window.main.insomniaFetch<{
-    created: string;
-    id: string;
-    ownerAccountId: string;
-    name: string;
-    isPersonal: boolean;
-    accounts: {
-      firstName: string;
-      lastName: string;
-      email: string;
+  try {
+    const teams = await window.main.insomniaFetch<{
+      created: string;
       id: string;
-      isAdmin: boolean;
-      dateAccepted: string;
-    }[];
-  }[]>({
-    method: 'GET',
-    path: '/api/teams',
-    sessionId,
-  });
+      ownerAccountId: string;
+      name: string;
+      isPersonal: boolean;
+      accounts: {
+        firstName: string;
+        lastName: string;
+        email: string;
+        id: string;
+        isAdmin: boolean;
+        dateAccepted: string;
+      }[];
+    }[]>({
+      method: 'GET',
+      path: '/api/teams',
+      sessionId,
+    });
 
-  const personalTeam = teams.find(team => team.isPersonal);
+    const personalTeam = teams.find(team => team.isPersonal);
 
-  if (personalTeam) {
-    return redirect(`/organization/${personalTeam.id}`);
+    if (personalTeam) {
+      return redirect(`/organization/${personalTeam.id}`);
+    }
+    return null;
+  } catch (err) {
+    console.log('Failed to load Teams', err);
+    return null;
   }
-
-  return null;
 };
 
 export interface OrganizationLoaderData {
@@ -81,9 +87,9 @@ export interface OrganizationLoaderData {
 export const loader: LoaderFunction = async () => {
   const sessionId = getCurrentSessionId();
 
-  if (!sessionId) {
-    throw redirect('/auth/login');
-  }
+  // if (!sessionId) {
+  //   throw redirect('/auth/login');
+  // }
 
   // await migrateLocalToCloudProjects();
   try {
@@ -168,18 +174,24 @@ export const loader: LoaderFunction = async () => {
   };
 };
 
-const Layout = styled.div({
+const Layout = styled.div<{withBar: boolean}>({
   position: 'relative',
   height: '100%',
   width: '100%',
   display: 'grid',
   backgroundColor: 'var(--color-bg)',
-  gridTemplate: `
-    'Header Header' auto
-    'Navbar Content' 1fr
-    'Statusbar Statusbar' 30px [row-end]
-    / 50px 1fr;
-  `,
+  gridTemplate: ({ withBar }) => withBar ? `
+  'Header Header' auto
+  'Banner Banner' 30px
+  'Navbar Content' 1fr
+  'Statusbar Statusbar' 30px [row-end]
+  / 50px 1fr;
+` : `
+'Header Header' auto
+'Navbar Content' 1fr
+'Statusbar Statusbar' 30px [row-end]
+/ 50px 1fr;
+`,
 });
 
 const OrganizationRoute = () => {
@@ -190,6 +202,7 @@ const OrganizationRoute = () => {
   const [importUri, setImportUri] = useState('');
 
   const actionFetcher = useFetcher();
+  const navigate = useNavigate();
 
   useEffect(() => {
     return window.main.on(
@@ -344,10 +357,10 @@ const OrganizationRoute = () => {
     ':workspaceId'
   ) as WorkspaceLoaderData | null;
 
-  const sessionId = getCurrentSessionId();
-  if (!sessionId) {
-    return null;
-  }
+  // const sessionId = getCurrentSessionId();
+  // if (!sessionId) {
+  //   return null;
+  // }
 
   return (
     <PresenceProvider>
@@ -366,14 +379,70 @@ const OrganizationRoute = () => {
                 />
               )}
               <Modals />
-              <Layout>
+              <Layout withBar={!isLoggedIn()}>
                 <OrganizationsNav />
                 <AppHeader
                   gridCenter={
                     workspaceData ? <WorkspaceHeader {...workspaceData} /> : null
                   }
-                  gridRight={<AccountToolbar />}
+                  gridRight={isLoggedIn() && <AccountToolbar />}
                 />
+                {workspaceData?.activeWorkspace && isScratchpad(workspaceData.activeWorkspace) ? <div
+                  style={{
+                    gridArea: 'Banner',
+                    background: 'linear-gradient(90deg, #7400e1 0%, #4000bf 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: '#fff',
+                  }}
+                >
+                  <div
+                    style={{
+                      flex: '0 0 50px',
+                      height: '100%',
+                    }}
+                  >
+                    <div
+                      style={{
+                        borderRight: '1px solid var(--hl-xl)',
+                        borderLeft: '1px solid var(--hl-xl)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        height: '100%',
+                        boxSizing: 'border-box',
+                      }}
+                    >
+                      <i className="fa fa-edit" />
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      gridArea: 'Banner',
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '0 var(--padding-md)',
+                      color: '#fff',
+                      gap: 'var(--padding-xs)',
+                    }}
+                  >
+                    Welcome to the Scratch Pad. To get the most out of Insomnia
+                    <Link
+                      to="/auth/login"
+                      style={{
+                        gap: 'var(--padding-xs)',
+                        color: '#fff',
+                        fontWeight: 'bold',
+                      }}
+                      variant='outlined'
+                      size='small'
+                    >
+                      go to your projects →
+                      {/* <i className="fa fa-arrow-right" /> */}
+                    </Link>
+                  </div>
+                </div> : null}
                 <Outlet />
                 <StatusBar />
               </Layout>

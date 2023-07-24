@@ -24,6 +24,8 @@ export const workspaceLoader: LoaderFunction = async ({
   const { projectId, workspaceId } = params;
   invariant(workspaceId, 'Workspace ID is required');
   invariant(projectId, 'Project ID is required');
+  const activeProject = await models.project.getById(projectId);
+  invariant(activeProject, 'Project not found');
 
   const activeWorkspace = await models.workspace.getById(workspaceId);
   invariant(activeWorkspace, 'Workspace not found');
@@ -31,9 +33,6 @@ export const workspaceLoader: LoaderFunction = async ({
   // I don't know what to say man, this is just how it is
   await models.environment.getOrCreateForParentId(workspaceId);
   await models.cookieJar.getOrCreateForParentId(workspaceId);
-
-  const activeProject = await models.project.getById(projectId);
-  invariant(activeProject, 'Project not found');
 
   const activeWorkspaceMeta = await models.workspaceMeta.getOrCreateByParentId(
     workspaceId,

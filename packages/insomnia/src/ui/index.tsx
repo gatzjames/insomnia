@@ -471,7 +471,7 @@ const router = createMemoryRouter(
     },
   ],
   {
-    initialEntries: ['/organization'],
+    initialEntries: [`/organization/${DEFAULT_PROJECT_ID}/project/${DEFAULT_PROJECT_ID}/workspace/wrk_scratchpad/debug`],
   }
 );
 
@@ -563,6 +563,7 @@ function updateReduxNavigationState(store: Store, pathname: string) {
 
 async function renderApp() {
   await database.initClient();
+  await models.project.seed();
 
   await initPlugins();
 

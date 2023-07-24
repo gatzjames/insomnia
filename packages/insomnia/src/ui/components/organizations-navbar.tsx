@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Link, useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { isLoggedIn } from '../../account/session';
 import { getAppWebsiteBaseURL } from '../../common/constants';
 import { OrganizationLoaderData } from '../routes/organization';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from './base/dropdown';
@@ -75,6 +76,18 @@ export const OrganizationsNav: FC = () => {
   return (
     <Navbar>
       <NavbarList>
+        {
+          !isLoggedIn() && (
+            <li>
+              <NavbarItem
+                to={'/auth/login'}
+                $isActive={false}
+              >
+                <i className='fa fa-home' />
+              </NavbarItem>
+            </li>
+          )
+        }
         {organizations.map(organization => {
           return (
             <li key={organization._id}>

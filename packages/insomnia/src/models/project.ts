@@ -1,7 +1,7 @@
 import { getProductName } from '../common/constants';
 import { database as db } from '../common/database';
 import { generateId } from '../common/misc';
-import type { BaseModel } from './index';
+import { type BaseModel, workspace } from './index';
 
 export const name = 'Project';
 export const type = 'Project';
@@ -84,6 +84,8 @@ export async function seed() {
   if (!defaultProject) {
     try {
       await create({ _id: DEFAULT_PROJECT_ID, name: getProductName(), remoteId: null });
+      await workspace.create({ _id: 'wrk_scratchpad', name: 'Scratchpad', parentId: DEFAULT_PROJECT_ID, scope: 'collection' });
+
     } catch (err) {
       console.warn('Failed to create default project. It probably already exists', err);
     }

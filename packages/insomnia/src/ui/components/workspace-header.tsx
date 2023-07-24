@@ -2,7 +2,7 @@ import React, { FC, Fragment } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import {  Project } from '../../models/project';
-import { isDesign, Workspace } from '../../models/workspace';
+import { isDesign, isScratchpad, Workspace } from '../../models/workspace';
 import { ActivityToggle } from './activity-toggle';
 import { Breadcrumb } from './breadcrumb';
 import { WorkspaceDropdown } from './dropdowns/workspace-dropdown';
@@ -35,7 +35,9 @@ export const WorkspaceHeader: FC<{
 
   return (
     <Fragment>
-      <Breadcrumb crumbs={crumbs} />
+      {!isScratchpad(activeWorkspace) && (
+        <Breadcrumb crumbs={crumbs} />
+      )}
       {isDesign(activeWorkspace) && <ActivityToggle />}
     </Fragment>
   );
