@@ -428,7 +428,7 @@ export const RequestUrlBar = forwardRef<RequestUrlBarHandle, Props>(({
         ) : (
           <div
             style={{
-              padding: 'var(--padding-xs)',
+              padding: '4px',
               display: 'flex',
             }}
           >
@@ -458,6 +458,7 @@ export const RequestUrlBar = forwardRef<RequestUrlBarHandle, Props>(({
                     borderTopRightRadius: 'var(--radius-md)',
                     borderBottomRightRadius: 'var(--radius-md)',
                     backgroundColor: 'var(--color-surprise)',
+                    color: 'var(--color-font-surprise)',
                     padding: '0 var(--padding-sm)',
                   }}
                 >

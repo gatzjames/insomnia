@@ -1,5 +1,5 @@
 import { IpcRendererEvent } from 'electron';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link, LoaderFunction, Outlet, redirect, useFetcher, useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -167,7 +167,7 @@ export const loader: LoaderFunction = async () => {
 
 };
 
-const Layout = styled.div<{withBar: boolean}>({
+const Layout = styled.div<{ withBar: boolean }>({
   position: 'relative',
   height: '100%',
   width: '100%',
@@ -378,7 +378,27 @@ const OrganizationRoute = () => {
                   gridCenter={
                     workspaceData ? <WorkspaceHeader {...workspaceData} /> : null
                   }
-                  gridRight={isLoggedIn() && <AccountToolbar />}
+                  gridRight={isLoggedIn() ? <AccountToolbar /> : (
+                    <Fragment>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={
+                          () => navigate('/auth/login')
+                        }
+                      >
+                        Login
+                      </Button>
+                      <Button
+                        onClick={() => navigate('/auth/login')}
+                        size="small"
+                        variant="contained"
+                      >
+                        Sign Up
+                      </Button>
+                    </Fragment>
+                  )
+                  }
                 />
                 {workspaceData?.activeWorkspace && isScratchpad(workspaceData.activeWorkspace) ? <div
                   style={{
