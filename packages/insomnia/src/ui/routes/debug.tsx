@@ -690,7 +690,7 @@ export const Debug: FC = () => {
                                 borderColor: 'var(--color-font)',
                               }}
                             >
-                              <Icon className='text-xs w-5' icon="refresh" />
+                              <Icon className='text-xs w-5' icon="globe-americas" />
                             </span>
                             <span className='truncate'>
                               {baseEnvironment.name}
@@ -707,7 +707,7 @@ export const Debug: FC = () => {
                             }}
                           >
                           <Icon
-                            icon={selectedItem.isPrivate ? 'lock' : 'refresh'}
+                            icon={selectedItem.isPrivate ? 'lock' : 'globe-americas'}
                             style={{
                               color: selectedItem.color ?? 'var(--color-font)',
                             }}
@@ -747,7 +747,7 @@ export const Debug: FC = () => {
                               }}
                             >
                               <Icon
-                                icon={item.isPrivate ? 'lock' : 'refresh'}
+                                icon={item.isPrivate ? 'lock' : 'globe-americas'}
                                 className='text-xs'
                                 style={{
                                   color: item.color ?? 'var(--color-font)',
