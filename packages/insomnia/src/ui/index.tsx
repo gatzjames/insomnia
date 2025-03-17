@@ -23,6 +23,7 @@ import {
 import { database } from '../common/database';
 import { initializeLogging } from '../common/log';
 import * as models from '../models';
+import { migrateCredentialsFromLocalStorage } from '../models/git-credentials';
 import { initNewOAuthSession } from '../network/o-auth-2/get-token';
 import { init as initPlugins } from '../plugins';
 import { applyColorScheme } from '../plugins/misc';
@@ -70,6 +71,7 @@ async function renderApp() {
   await initPlugins();
 
   await migrateFromLocalStorage();
+  await migrateCredentialsFromLocalStorage();
 
   // Check if there is a Session provided by an env variable and use this
   const insomniaSession = getInsomniaSession();
