@@ -1,7 +1,6 @@
 import path from 'node:path';
 
 import { type IRuleResult } from '@stoplight/spectral-core';
-import CodeMirror from 'codemirror';
 import type { OpenAPIV3 } from 'openapi-types';
 import { Fragment, type ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -37,6 +36,7 @@ import { useWorkspaceLoaderData } from '~/routes/organization.$organizationId.pr
 import { useSpecGenerateRequestCollectionActionFetcher } from '~/routes/organization.$organizationId.project.$projectId.workspace.$workspaceId.spec.generate-request-collection';
 import { useSpecUpdateActionFetcher } from '~/routes/organization.$organizationId.project.$projectId.workspace.$workspaceId.spec.update';
 import { CodeEditor, type CodeEditorHandle } from '~/ui/components/.client/codemirror/code-editor';
+import CodeMirror from '~/ui/components/.client/codemirror/codemirror';
 import { DesignEmptyState } from '~/ui/components/design-empty-state';
 import { DocumentTab } from '~/ui/components/document-tab';
 import { WorkspaceDropdown } from '~/ui/components/dropdowns/workspace-dropdown';

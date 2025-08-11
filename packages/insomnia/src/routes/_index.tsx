@@ -1,5 +1,5 @@
 import { redirect } from 'react-router';
 
-export async function clientLoader() {
+export async function loader() {
   return redirect('/organization');
 }

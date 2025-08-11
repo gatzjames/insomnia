@@ -7,6 +7,8 @@ import { BrowserWindow } from 'electron';
 import contextMenu from 'electron-context-menu';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 
+import { routerProcess } from '~/electron-router-process/electron-router-process';
+
 import { userDataFolder } from '../config/config.json';
 import { getAppVersion, getProductName, isDevelopment, isMac } from './common/constants';
 import { database } from './common/database';
@@ -67,6 +69,7 @@ app.on('web-contents-created', (_, contents) => {
 
 // When the app is first launched
 app.on('ready', async () => {
+  await routerProcess.init();
   registerElectronHandlers();
   // @TODO - Maybe move the register stuff in the registerMainHandlers function
   registerMainHandlers();

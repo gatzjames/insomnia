@@ -1,4 +1,4 @@
-import { href, redirect } from 'react-router';
+import { href, Outlet, redirect } from 'react-router';
 
 import * as session from '~/account/session';
 import { userSession } from '~/models';
@@ -7,6 +7,10 @@ import { migrateProjectsUnderOrganization, syncOrganizations } from '~/ui/organi
 import { invariant } from '~/utils/invariant';
 
 import type { Route } from './+types/organization._index';
+
+export async function loader() {
+  return null;
+}
 
 export async function clientLoader(_args: Route.ClientLoaderArgs) {
   const { id: sessionId, accountId } = await userSession.getOrCreate();
@@ -42,3 +46,5 @@ export async function clientLoader(_args: Route.ClientLoaderArgs) {
   await session.logout();
   return redirect(href('/auth/login'));
 }
+
+export default Outlet;

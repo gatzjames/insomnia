@@ -75,6 +75,24 @@ export default async function build(options: Options) {
     },
   };
 
+  const routerProcessBuildOptions: BuildOptions = {
+    entryPoints: ['./src/electron-router-process/router-process.ts'],
+    // TODO: make all of these outputs use a .min.js convention to simplify ignore files
+    outfile: path.join(outdir, 'router-process.js'),
+    target: 'esnext',
+    bundle: true,
+    platform: 'node',
+    sourcemap: true,
+    format: 'esm',
+    external: ['vite'],
+    banner: {
+      js: `import { createRequire } from 'module'; const require = createRequire(import.meta.url);`,
+    },
+    loader: {
+      '.node': 'copy',
+    },
+  };
+
   const mainBuildOptions: BuildOptions = {
     entryPoints: ['./src/main.development.ts'],
     outfile: path.join(outdir, 'main.min.js'),
@@ -134,6 +152,10 @@ export default async function build(options: Options) {
       ...hiddenBrowserWindowBuildOptions,
       plugins: [restartElectronPlugin('hidden-browser-window')],
     });
+    const routerProcessContext = await esbuild.context({
+      ...routerProcessBuildOptions,
+      plugins: [restartElectronPlugin('router-process')],
+    });
     const mainContext = await esbuild.context({
       ...mainBuildOptions,
       plugins: [restartElectronPlugin('main')],
@@ -157,17 +179,19 @@ export default async function build(options: Options) {
       }
     };
 
+    const routerProcessWatch = await routerProcessContext.watch();
     const preloadWatch = await preloadContext.watch();
     const hiddenWindowWatch = await hiddenBrowserWindowContext.watch();
     const mainWatch = await mainContext.watch();
     const hiddenWindowPreloadWatch = await hiddenPreloadContext.watch();
-    return Promise.all([preloadWatch, hiddenWindowPreloadWatch, mainWatch, hiddenWindowWatch]);
+    return Promise.all([preloadWatch, hiddenWindowPreloadWatch, mainWatch, hiddenWindowWatch, routerProcessWatch]);
   }
+  const routerProcess = esbuild.build(routerProcessBuildOptions);
   const preload = esbuild.build(preloadBuildOptions);
   const hiddenBrowserWindow = esbuild.build(hiddenBrowserWindowBuildOptions);
   const hiddenBrowserWindowPreload = esbuild.build(hiddenBrowserWindowPreloadBuildOptions);
   const main = esbuild.build(mainBuildOptions);
-  return Promise.all([main, preload, hiddenBrowserWindow, hiddenBrowserWindowPreload]).catch(err => {
+  return Promise.all([routerProcess, main, preload, hiddenBrowserWindow, hiddenBrowserWindowPreload]).catch(err => {
     console.error('[Build] Build failed:', err);
   });
 }

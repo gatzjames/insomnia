@@ -5,6 +5,8 @@ import { parse as urlParse } from 'node:url';
 import { Curl, CurlAuth, CurlFeature, CurlProxy, CurlSslOpt, type HeaderInfo } from '@getinsomnia/node-libcurl';
 import { app, net, protocol, session } from 'electron';
 
+import { appURL, routerProcess } from '~/electron-router-process/electron-router-process';
+
 import { getApiBaseURL } from '../common/constants';
 import { get as getSettings } from '../models/settings';
 import * as _userSession from '../models/user-session';
@@ -180,12 +182,8 @@ export async function registerInsomniaProtocols() {
   if (!protocol.isProtocolHandled(httpsScheme)) {
     protocol.handle(httpsScheme, async request => {
       const url = new URL(request.url);
-      if (url.hostname === 'insomnia-app.local') {
-        const rootDir = path.resolve(__dirname, 'client');
-        const filePath = path.join(rootDir, url.pathname.startsWith('/assets') ? url.pathname : 'index.html');
-        console.log(`Loading index for: ${url.pathname} from: ${filePath}`);
-
-        return await net.fetch(`file://${filePath}`, { bypassCustomProtocolHandlers: true });
+      if (url.hostname === 'localhost') {
+        return routerProcess.fetch(request);
       }
 
       return net.fetch(request, { bypassCustomProtocolHandlers: true });

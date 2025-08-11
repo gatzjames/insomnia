@@ -16,6 +16,8 @@ import {
   shell,
 } from 'electron';
 
+import { routerProcess } from '~/electron-router-process/electron-router-process';
+
 import {
   getAppBuildDate,
   getAppVersion,
@@ -237,7 +239,7 @@ export function createWindow(): ElectronBrowserWindow {
   // Open generic links (<a .../>) in default browser
   mainBrowserWindow.webContents.on('will-navigate', (event, url) => {
     // Prevents local dev full-reload events from opening browser window, see https://github.com/Kong/insomnia/pull/4925
-    if (url.startsWith(appUrl)) {
+    if (url.startsWith(routerProcess.url)) {
       return;
     }
 
@@ -254,11 +256,7 @@ export function createWindow(): ElectronBrowserWindow {
   });
 
   // Load the html of the app.
-  const appUrl = process.env.APP_RENDER_URL || 'https://insomnia-app.local';
-
-  console.log(`[main] Loading ${appUrl}`);
-
-  mainBrowserWindow.loadURL(appUrl);
+  mainBrowserWindow.loadURL(routerProcess.url);
   // Emitted when the window is closed.
   mainBrowserWindow.on('closed', () => {
     if (browserWindows.get('Insomnia')) {
